@@ -1,10 +1,11 @@
 {
   "name": "private-topic-threads-automation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "type": "module",
   "engines": { "node": ">=20" },
   "dependencies": {
-    "openai": "^5.12.2"
+    "openai": "^5.12.2",
+    "sharp": "^0.34.3"
   }
 }
