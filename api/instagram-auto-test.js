@@ -7,35 +7,34 @@ function authorized(req) {
   return req.headers["x-admin-key"] === secret;
 }
 
-function getBaseUrl(req) {
-  const proto = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
-  const host = req.headers.host;
-  return `${proto}://${host}`;
+function publicBaseUrl(req) {
+  const proto = req.headers["x-forwarded-proto"] || "https";
+  return `${proto}://${req.headers.host}`;
+}
+
+function makeImageUrl(baseUrl, content) {
+  const d = Buffer.from(JSON.stringify({
+    category: content.category,
+    title: content.title,
+    summary: content.summary
+  }), "utf8").toString("base64url");
+  return `${baseUrl}/api/instagram-card?d=${encodeURIComponent(d)}`;
+}
+
+async function run(req) {
+  const content = await createInstagramContent();
+  const image_url = makeImageUrl(publicBaseUrl(req), content);
+  const result = await publishInstagramImage({ imageUrl: image_url, caption: content.caption });
+  return { content, image_url, result };
 }
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ ok: false, error: "Method not allowed" });
-  }
-
-  if (!authorized(req)) {
-    return res.status(401).json({ ok: false, error: "Unauthorized" });
-  }
-
+  if (req.method !== "POST") return res.status(405).json({ ok: false, error: "Method not allowed" });
+  if (!authorized(req)) return res.status(401).json({ ok: false, error: "Unauthorized" });
   try {
-    const { title, caption } = await createInstagramContent();
-    const imageUrl = `${getBaseUrl(req)}/api/instagram-image?title=${encodeURIComponent(title)}&kicker=${encodeURIComponent("PRIVATE TOPIC")}`;
-    const result = await publishInstagramImage({ imageUrl, caption });
-
-    return res.status(200).json({
-      ok: true,
-      title,
-      caption,
-      image_url: imageUrl,
-      result
-    });
+    const out = await run(req);
+    return res.status(200).json({ ok: true, ...out });
   } catch (error) {
-    console.error("instagram_auto_test_error", error);
     return res.status(500).json({ ok: false, error: String(error?.message || error) });
   }
 }

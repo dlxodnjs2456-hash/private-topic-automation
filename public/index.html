@@ -1,131 +1,57 @@
 <!doctype html>
 <html lang="ko">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>프베톡 자동화 센터</title>
-  <style>
-    :root{--bg:#0b1020;--panel:#121a2f;--line:#263353;--text:#f6f8ff;--muted:#9faacc;--ok:#5ed6a8;--warn:#ffcf66;--accent:#7d8cff;--accent2:#9d7cff}
-    *{box-sizing:border-box}body{margin:0;background:linear-gradient(180deg,#0b1020,#10172a);color:var(--text);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
-    .wrap{max-width:1180px;margin:auto;padding:28px 18px 56px}.top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:22px}
-    h1{font-size:28px;margin:0 0 7px}.sub,.muted{color:var(--muted);font-size:13px}.badge,.status,.pill{border:1px solid var(--line);background:#111a30;border-radius:999px;padding:7px 10px;color:#c9d1ef;font-size:12px}
-    .status.ok{color:var(--ok);background:#113226}.status.warn{color:var(--warn);background:#362c13}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-    .card{background:rgba(18,26,47,.96);border:1px solid var(--line);border-radius:18px;padding:18px}.card h2{font-size:17px;margin:0}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .big{font-size:25px;font-weight:800;margin:18px 0 5px}.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}button{border:0;border-radius:11px;padding:10px 13px;font-weight:700;cursor:pointer}
-    .primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}.secondary{background:#1b2744;color:#e8ecff;border:1px solid #2b3a60}.disabled{opacity:.45;cursor:not-allowed}
-    .two{grid-column:span 2}.wide{grid-column:1/-1}input,textarea{width:100%;background:#0e1629;border:1px solid var(--line);color:white;border-radius:12px;padding:12px}textarea{min-height:110px;resize:vertical}
-    label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}pre{background:#09101f;border:1px solid var(--line);border-radius:12px;padding:13px;white-space:pre-wrap;word-break:break-word;color:#cdd5ef;min-height:70px}
-    .schedule{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}.notice{margin-top:16px;padding:13px;border:1px solid #334267;background:#111b31;border-radius:12px;color:#b9c5e8;font-size:13px;line-height:1.55}
-    @media(max-width:850px){.grid{grid-template-columns:1fr}.two,.wide{grid-column:auto}.top{flex-direction:column}}
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>프베톡 자동화 센터</title>
+<style>
+body{font-family:Arial,"Noto Sans KR",sans-serif;background:#0b1020;color:#f2f5ff;margin:0;padding:32px}.wrap{max-width:920px;margin:auto}.card{background:#121a2f;border:1px solid #25345b;border-radius:18px;padding:22px;margin-bottom:18px}.row{display:flex;justify-content:space-between;gap:12px;align-items:center}.status{padding:7px 10px;border:1px solid #314572;border-radius:999px;font-size:12px;color:#d5def8}.ok{color:#7be0b2}.warn{color:#ffd772}.muted{color:#9faacc;font-size:13px;line-height:1.6}button{border:0;border-radius:10px;padding:12px 15px;background:#7c8eff;color:white;font-weight:700;cursor:pointer}input,textarea{width:100%;box-sizing:border-box;border:1px solid #2b3a60;background:#0d1528;color:#fff;border-radius:10px;padding:12px;font-size:15px}textarea{min-height:120px}.result{white-space:pre-wrap;background:#0b1325;border:1px solid #263353;border-radius:12px;padding:14px;min-height:48px}.preview{width:320px;border-radius:16px;border:1px solid #2c3d68}.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}@media(max-width:800px){.grid{grid-template-columns:1fr}.preview{width:100%}}
+</style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top">
-    <div><h1>프베톡 자동화 센터</h1><div class="sub">Threads · Instagram · TikTok 콘텐츠 자동화 통합 관리</div></div>
-    <div class="badge" id="systemBadge">상태 확인 중</div>
+<main class="wrap">
+  <div class="card">
+    <div class="row"><div><h1 style="margin:0 0 8px">프베톡 자동화 센터</h1><div class="muted">Instagram 운영형 카드 자동 게시 v2</div></div><div class="status" id="sys">확인 중</div></div>
   </div>
 
   <div class="grid">
     <section class="card">
-      <div class="row"><h2>Threads</h2><span class="status" id="threadsStatus">확인 중</span></div>
-      <div class="big">자동 게시</div><div class="muted">기존 Threads 자동 게시 기능은 그대로 유지됩니다.</div>
-      <div class="schedule"><span class="pill">08:30 KST</span><span class="pill">18:30 KST</span></div>
-    </section>
-
-    <section class="card">
-      <div class="row"><h2>Instagram</h2><span class="status" id="instagramStatus">확인 중</span></div>
-      <div class="big">AI 자동 게시</div><div class="muted">AI가 주제·캡션·정사각형 이미지를 생성해 자동 게시합니다.</div>
-      <div class="schedule"><span class="pill">08:35 KST</span><span class="pill">18:35 KST</span></div>
-      <div class="btns"><button class="primary" onclick="document.getElementById('instagramAuto').scrollIntoView({behavior:'smooth'})">AI 자동 게시 테스트</button></div>
-    </section>
-
-    <section class="card">
-      <div class="row"><h2>TikTok</h2><span class="status warn">연결 준비</span></div>
-      <div class="big">다음 단계</div><div class="muted">Instagram 자동 게시 확인 후 TikTok 자동화를 연결합니다.</div>
-      <div class="btns"><button class="secondary disabled" disabled>준비 중</button></div>
-    </section>
-
-    <section class="card two" id="instagramAuto">
-      <div class="row"><h2>Instagram AI 자동 게시 테스트</h2><span class="status ok">전체 흐름</span></div>
-      <div class="notice">버튼 한 번으로 <b>최신 이슈 확인 → AI 콘텐츠 생성 → 정사각형 이미지 생성 → Instagram 게시</b>까지 실제 자동화 흐름을 실행합니다.</div>
+      <div class="row"><h2 style="margin:0">Instagram AI 자동 게시 테스트</h2><span class="status">관리자</span></div>
+      <p class="muted">버튼을 누르면 최신 이슈 기반으로 제목/요약/캡션을 생성하고, 운영형 정사각형 카드 이미지를 만든 뒤 Instagram에 실제 게시합니다.</p>
       <label>AUTOMATION_ADMIN_KEY</label>
-      <input type="password" id="autoAdminKey" placeholder="Vercel에 저장한 관리자 키" />
-      <div class="btns"><button class="primary" id="autoPublishBtn" onclick="autoPublishInstagram()">AI 생성 후 바로 게시</button></div>
-      <label>결과</label><pre id="autoResult">대기 중</pre>
+      <input id="adminKey" type="password" autocomplete="off" />
+      <div style="margin-top:16px"><button id="runBtn">AI 생성 후 바로 게시</button></div>
+      <h3>결과</h3>
+      <div class="result" id="result">대기 중</div>
     </section>
-
     <section class="card">
-      <div class="row"><h2>자동 게시 스케줄</h2><span class="status ok">활성</span></div>
-      <div class="big">하루 2회</div>
-      <div class="muted">Threads와 Instagram을 5분 간격으로 게시합니다.</div>
-      <div class="schedule"><span class="pill">Threads 08:30 / 18:30</span><span class="pill">Instagram 08:35 / 18:35</span></div>
-    </section>
-
-    <section class="card two" id="instagramManual">
-      <div class="row"><h2>Instagram 직접 이미지 게시 테스트</h2><span class="status">고급 테스트</span></div>
-      <label>AUTOMATION_ADMIN_KEY</label>
-      <input type="password" id="adminKey" placeholder="Vercel에 저장한 관리자 키" />
-      <label>공개 이미지 URL</label>
-      <input id="imageUrl" placeholder="https://...jpg 또는 ...png" />
-      <label>캡션</label>
-      <textarea id="caption">필요한 소식만 간편하게 확인하세요.\n\n기업 · 산업 · 경제 · 글로벌 이슈를 관심 주제에 맞춰 정리합니다.\n\n프베톡</textarea>
-      <div class="btns"><button class="secondary" onclick="publishInstagram()">직접 이미지 게시</button></div>
-      <label>결과</label><pre id="igResult">대기 중</pre>
-    </section>
-
-    <section class="card">
-      <div class="row"><h2>Instagram 상태</h2><span class="status ok">API 연결</span></div>
-      <div class="notice">일반 사용은 위의 <b>AI 자동 게시 테스트</b>만 사용하면 됩니다. 직접 이미지 URL 게시 기능은 API 점검용으로 유지합니다.</div>
-    </section>
-
-    <section class="card wide">
-      <div class="row"><h2>환경 변수 연결 상태</h2><button class="secondary" onclick="loadStatus()">새로고침</button></div>
-      <pre id="envStatus">확인 중</pre>
+      <h2 style="margin-top:0">카드 미리보기 예시</h2>
+      <img class="preview" id="preview" src="" alt="preview" />
+      <p class="muted">실제 게시 이미지는 생성된 텍스트에 맞춰 자동 렌더링됩니다.</p>
     </section>
   </div>
-</div>
+</main>
 <script>
 async function loadStatus(){
-  const out=document.getElementById('envStatus');
-  try{
-    const r=await fetch('/api/status'); const j=await r.json();
-    out.textContent=JSON.stringify(j,null,2);
-    const t=!!j?.services?.threads?.ready, i=!!j?.services?.instagram?.ready;
-    const ts=document.getElementById('threadsStatus'); ts.textContent=t?'연결됨':'설정 필요'; ts.className='status '+(t?'ok':'warn');
-    const is=document.getElementById('instagramStatus'); is.textContent=i?'연결됨':'설정 필요'; is.className='status '+(i?'ok':'warn');
-    document.getElementById('systemBadge').textContent=(t&&i)?'Threads · Instagram 자동화 정상':'일부 설정 확인 필요';
-  }catch(e){out.textContent='상태 확인 실패: '+e.message}
-}
-async function autoPublishInstagram(){
-  const key=document.getElementById('autoAdminKey').value.trim();
-  const out=document.getElementById('autoResult');
-  const btn=document.getElementById('autoPublishBtn');
-  if(!key){out.textContent='AUTOMATION_ADMIN_KEY를 입력해 주세요.';return}
-  btn.disabled=true; btn.textContent='AI 생성 및 게시 중...';
-  out.textContent='최신 이슈 확인 → 콘텐츠 생성 → 이미지 생성 → Instagram 게시를 진행 중입니다. 잠시 기다려 주세요.';
-  try{
-    const r=await fetch('/api/instagram-auto-test',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':key},body:'{}'});
-    const raw=await r.text(); let body; try{body=JSON.parse(raw)}catch{body={raw}}
-    out.textContent=JSON.stringify(body,null,2);
-  }catch(e){out.textContent='요청 실패: '+e.message}
-  finally{btn.disabled=false;btn.textContent='AI 생성 후 바로 게시'}
-}
-async function publishInstagram(){
-  const key=document.getElementById('adminKey').value.trim();
-  const image_url=document.getElementById('imageUrl').value.trim();
-  const caption=document.getElementById('caption').value.trim();
-  const out=document.getElementById('igResult');
-  if(!key){out.textContent='AUTOMATION_ADMIN_KEY를 입력해 주세요.';return}
-  if(!image_url){out.textContent='공개 이미지 URL을 입력해 주세요.';return}
-  out.textContent='Instagram 게시 요청 중...';
-  try{
-    const r=await fetch('/api/instagram-manual',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':key},body:JSON.stringify({image_url,caption})});
-    const raw=await r.text(); let body; try{body=JSON.parse(raw)}catch{body={raw}}
-    out.textContent=JSON.stringify(body,null,2);
-  }catch(e){out.textContent='요청 실패: '+e.message}
+  const r=await fetch('/api/status'); const j=await r.json();
+  const ready = !!j?.services?.instagram?.ready;
+  const el=document.getElementById('sys'); el.textContent=ready?'Instagram 연결됨':'설정 확인 필요'; el.className='status '+(ready?'ok':'warn');
+  const demo={category:'경제 브리핑',title:'오늘 체크할\n핵심 경제 이슈',summary:'복잡한 소식을 짧고 쉽게\n정리한 운영형 카드 예시입니다.'};
+  const d=btoa(unescape(encodeURIComponent(JSON.stringify(demo)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  document.getElementById('preview').src='/api/instagram-card?d='+encodeURIComponent(d);
 }
 loadStatus();
+document.getElementById('runBtn').addEventListener('click', async ()=>{
+  const key=document.getElementById('adminKey').value.trim();
+  const out=document.getElementById('result');
+  if(!key){ out.textContent='AUTOMATION_ADMIN_KEY를 입력해 주세요.'; return; }
+  out.textContent='AI 콘텐츠 생성 및 Instagram 게시 요청 중...';
+  try{
+    const r=await fetch('/api/instagram-auto-test',{method:'POST',headers:{'Content-Type':'application/json','x-admin-key':key},body:'{}'});
+    const t=await r.text(); let data; try{data=JSON.parse(t)}catch{data={raw:t}}; out.textContent=JSON.stringify(data,null,2);
+    if(data?.image_url){ document.getElementById('preview').src=data.image_url; }
+  }catch(e){ out.textContent='오류\n'+e.message; }
+});
 </script>
 </body>
 </html>
