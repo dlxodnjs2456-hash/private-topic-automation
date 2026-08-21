@@ -6,6 +6,12 @@ function authorized(req) {
   return req.headers["x-admin-key"] === secret;
 }
 
+function getBaseUrl(req) {
+  const proto = String(req.headers["x-forwarded-proto"] || "https").split(",")[0].trim();
+  const host = req.headers.host;
+  return `${proto}://${host}`;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
@@ -16,15 +22,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const imageUrl = String(req.body?.image_url || "").trim();
+    const providedImageUrl = String(req.body?.image_url || "").trim();
+    const imageUrl = providedImageUrl || `${getBaseUrl(req)}/api/instagram-test-image`;
     const caption = String(req.body?.caption || "").trim();
-
-    if (!imageUrl) {
-      return res.status(400).json({
-        ok: false,
-        error: "image_url is required. Instagram must be able to access the image through a public HTTPS URL."
-      });
-    }
 
     const result = await publishInstagramImage({ imageUrl, caption });
     console.log(JSON.stringify({ event: "instagram_manual_publish", imageUrl, result }));
