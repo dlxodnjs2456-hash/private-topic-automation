@@ -16,7 +16,9 @@ function makeImageUrl(baseUrl, content) {
   const d = Buffer.from(JSON.stringify({
     category: content.category,
     title: content.title,
-    summary: content.summary
+    summary: content.summary,
+    bullets: content.bullets,
+    interpretation: content.interpretation
   }), "utf8").toString("base64url");
   return `${baseUrl}/api/instagram-card?d=${encodeURIComponent(d)}`;
 }
