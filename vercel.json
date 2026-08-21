@@ -4,6 +4,10 @@
     {
       "path": "/api/threads-cron",
       "schedule": "30 9,23 * * *"
+    },
+    {
+      "path": "/api/instagram-cron",
+      "schedule": "35 9,23 * * *"
     }
   ],
   "rewrites": [
