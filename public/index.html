@@ -1,22 +1,152 @@
 <!doctype html>
 <html lang="ko">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>PRIVATE TOPIC Threads Automation</title>
-<style>
-body{font-family:Arial,"Noto Sans KR",sans-serif;background:#f5f7fb;color:#172033;margin:0;padding:32px}.wrap{max-width:720px;margin:auto;background:white;border:1px solid #e5e9f2;border-radius:18px;padding:28px}h1{margin-top:0;font-size:25px}label{display:block;font-weight:700;margin:18px 0 7px}input,textarea{width:100%;box-sizing:border-box;border:1px solid #ccd3df;border-radius:10px;padding:12px;font-size:16px}textarea{min-height:150px;resize:vertical}button{margin-top:18px;border:0;border-radius:10px;padding:13px 18px;background:#111827;color:#fff;font-weight:700;cursor:pointer}.note{font-size:13px;color:#687386;line-height:1.6}.status{white-space:pre-wrap;margin-top:18px;padding:12px;border-radius:10px;background:#f2f4f7;min-height:24px}</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>프베톡 자동화 센터</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121a2f; --panel2:#17213a; --line:#263353;
+      --text:#f6f8ff; --muted:#9faacc; --ok:#5ed6a8; --warn:#ffcf66; --bad:#ff7b8b;
+      --accent:#7d8cff; --accent2:#9d7cff;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;background:linear-gradient(180deg,#0b1020 0%,#10172a 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+    .wrap{max-width:1180px;margin:0 auto;padding:28px 18px 56px}
+    .top{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:22px}
+    h1{font-size:28px;margin:0 0 7px}.sub{color:var(--muted);font-size:14px}
+    .badge{border:1px solid var(--line);background:#111a30;border-radius:999px;padding:9px 12px;color:#c9d1ef;font-size:13px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .card{background:rgba(18,26,47,.95);border:1px solid var(--line);border-radius:18px;padding:18px}
+    .card h2{font-size:17px;margin:0}.row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .status{font-size:12px;padding:6px 9px;border-radius:999px;background:#17243e;color:#cbd5f5}
+    .status.ok{color:var(--ok);background:#113226}.status.warn{color:var(--warn);background:#362c13}
+    .muted{color:var(--muted);font-size:13px}.big{font-size:25px;font-weight:800;margin:18px 0 5px}
+    .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+    button{appearance:none;border:0;border-radius:11px;padding:10px 13px;font-weight:700;cursor:pointer}
+    .primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+    .secondary{background:#1b2744;color:#e8ecff;border:1px solid #2b3a60}
+    .disabled{opacity:.48;cursor:not-allowed}
+    .wide{grid-column:1/-1}.two{grid-column:span 2}
+    input,textarea{width:100%;background:#0e1629;border:1px solid var(--line);color:white;border-radius:12px;padding:12px}
+    textarea{min-height:118px;resize:vertical}
+    label{display:block;font-size:12px;color:var(--muted);margin:12px 0 6px}
+    pre{background:#09101f;border:1px solid var(--line);border-radius:12px;padding:13px;white-space:pre-wrap;word-break:break-word;color:#cdd5ef;min-height:70px}
+    .schedule{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}.pill{padding:8px 10px;border:1px solid var(--line);border-radius:10px;color:#dbe2ff;background:#111b31}
+    .notice{margin-top:16px;padding:13px 14px;border:1px solid #334267;background:#111b31;border-radius:12px;color:#b9c5e8;font-size:13px;line-height:1.55}
+    @media(max-width:850px){.grid{grid-template-columns:1fr}.two,.wide{grid-column:auto}.top{flex-direction:column}}
+  </style>
 </head>
-<body><main class="wrap">
-<h1>Threads 테스트 게시</h1>
-<p class="note">이 페이지는 초기 연결 테스트용입니다. 관리자 키와 Threads 토큰은 서로 다른 값입니다. 액세스 토큰은 이 화면에 입력하지 않습니다.</p>
-<form id="f">
-<label for="key">AUTOMATION_ADMIN_KEY</label><input id="key" type="password" autocomplete="off" required>
-<label for="text">테스트 게시물</label><textarea id="text" maxlength="480" required>오늘부터 필요한 소식만 간단하게 정리해보겠습니다.\n\n기업 · 산업 · 경제 · 글로벌 이슈를 편하게 확인해보세요.</textarea>
-<button type="submit">Threads에 테스트 게시</button>
-</form><div class="status" id="status">대기 중</div>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <h1>프베톡 자동화 센터</h1>
+      <div class="sub">Threads · Instagram · TikTok 콘텐츠 자동화 통합 관리</div>
+    </div>
+    <div class="badge" id="systemBadge">시스템 상태 확인 중</div>
+  </div>
+
+  <div class="grid">
+    <section class="card">
+      <div class="row"><h2>Threads</h2><span class="status" id="threadsStatus">확인 중</span></div>
+      <div class="big">자동 게시</div>
+      <div class="muted">현재 연결된 Threads 계정으로 게시합니다.</div>
+      <div class="schedule"><span class="pill">08:30 KST</span><span class="pill">18:30 KST</span></div>
+      <div class="btns"><button class="primary" onclick="scrollToManual()">수동 게시 테스트</button></div>
+    </section>
+
+    <section class="card">
+      <div class="row"><h2>Instagram</h2><span class="status warn" id="instagramStatus">연결 준비</span></div>
+      <div class="big">다음 단계</div>
+      <div class="muted">Instagram Graph API 연결 후 이미지/피드 자동 게시 기능을 추가합니다.</div>
+      <div class="btns"><button class="secondary disabled" disabled>준비 중</button></div>
+    </section>
+
+    <section class="card">
+      <div class="row"><h2>TikTok</h2><span class="status warn" id="tiktokStatus">연결 준비</span></div>
+      <div class="big">다음 단계</div>
+      <div class="muted">TikTok Content Posting API 연결 후 게시 자동화를 추가합니다.</div>
+      <div class="btns"><button class="secondary disabled" disabled>준비 중</button></div>
+    </section>
+
+    <section class="card two" id="manual">
+      <div class="row"><h2>Threads 수동 게시</h2><span class="status">관리자</span></div>
+      <label>AUTOMATION_ADMIN_KEY</label>
+      <input type="password" id="adminKey" placeholder="Vercel에 저장한 관리자 키" />
+      <label>게시할 내용</label>
+      <textarea id="manualText" placeholder="비워두면 AI가 자동 생성하도록 현재 API 구조에 맞춰 요청합니다."></textarea>
+      <div class="btns">
+        <button class="primary" onclick="manualPublish()">Threads 게시</button>
+        <button class="secondary" onclick="clearResult()">결과 지우기</button>
+      </div>
+      <label>결과</label>
+      <pre id="result">대기 중</pre>
+    </section>
+
+    <section class="card">
+      <div class="row"><h2>자동 게시 스케줄</h2><span class="status ok">활성</span></div>
+      <div class="big">하루 2회</div>
+      <div class="muted">Vercel Cron 기준 UTC 09:30 / 23:30</div>
+      <div class="schedule"><span class="pill">18:30 KST</span><span class="pill">08:30 KST</span></div>
+      <div class="notice">Cron 엔드포인트: <b>/api/threads-cron</b><br>기존 Threads 자동 게시 로직은 변경하지 않습니다.</div>
+    </section>
+
+    <section class="card wide">
+      <div class="row"><h2>환경 변수 연결 상태</h2><button class="secondary" onclick="loadStatus()">새로고침</button></div>
+      <pre id="envStatus">확인 중</pre>
+    </section>
+  </div>
+</div>
+
 <script>
-const f=document.getElementById('f'),s=document.getElementById('status');
-f.addEventListener('submit',async(e)=>{e.preventDefault();s.textContent='게시 요청 중...';try{const r=await fetch('/api/threads-test',{method:'POST',headers:{'content-type':'application/json','x-admin-key':document.getElementById('key').value},body:JSON.stringify({text:document.getElementById('text').value})});const d=await r.json();s.textContent=r.ok?'게시 완료\n'+JSON.stringify(d,null,2):'실패\n'+JSON.stringify(d,null,2)}catch(err){s.textContent='오류\n'+err.message}});
+  function scrollToManual(){ document.getElementById('manual').scrollIntoView({behavior:'smooth'}); }
+  function clearResult(){ document.getElementById('result').textContent='대기 중'; }
+
+  async function loadStatus(){
+    const out=document.getElementById('envStatus');
+    out.textContent='확인 중...';
+    try{
+      const r=await fetch('/api/status');
+      const j=await r.json();
+      out.textContent=JSON.stringify(j,null,2);
+
+      const threadsReady = !!j?.services?.threads?.ready;
+      const ts=document.getElementById('threadsStatus');
+      ts.textContent=threadsReady?'연결됨':'설정 필요';
+      ts.className='status '+(threadsReady?'ok':'warn');
+
+      document.getElementById('systemBadge').textContent=threadsReady?'Threads 자동화 정상':'일부 설정 확인 필요';
+    }catch(e){
+      out.textContent='상태 확인 실패: '+e.message;
+      document.getElementById('systemBadge').textContent='상태 확인 실패';
+    }
+  }
+
+  async function manualPublish(){
+    const key=document.getElementById('adminKey').value.trim();
+    const text=document.getElementById('manualText').value.trim();
+    const out=document.getElementById('result');
+
+    if(!key){ out.textContent='AUTOMATION_ADMIN_KEY를 입력해 주세요.'; return; }
+
+    out.textContent='게시 요청 중...';
+    try{
+      const r=await fetch('/api/threads-manual',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','x-admin-key':key},
+        body:JSON.stringify({text})
+      });
+      const raw=await r.text();
+      let body;
+      try{ body=JSON.parse(raw); }catch{ body={raw}; }
+      out.textContent=JSON.stringify(body,null,2);
+    }catch(e){
+      out.textContent='요청 실패: '+e.message;
+    }
+  }
+
+  loadStatus();
 </script>
-</main></body></html>
+</body>
+</html>
