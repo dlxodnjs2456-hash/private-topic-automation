@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "crons": [
+    {
+      "path": "/api/threads-cron",
+      "schedule": "30 9,23 * * *"
+    }
+  ],
+  "rewrites": [
+    { "source": "/", "destination": "/public/index.html" }
+  ]
+}

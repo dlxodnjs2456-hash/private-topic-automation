@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PRIVATE TOPIC Threads Automation</title>
+<style>
+body{font-family:Arial,"Noto Sans KR",sans-serif;background:#f5f7fb;color:#172033;margin:0;padding:32px}.wrap{max-width:720px;margin:auto;background:white;border:1px solid #e5e9f2;border-radius:18px;padding:28px}h1{margin-top:0;font-size:25px}label{display:block;font-weight:700;margin:18px 0 7px}input,textarea{width:100%;box-sizing:border-box;border:1px solid #ccd3df;border-radius:10px;padding:12px;font-size:16px}textarea{min-height:150px;resize:vertical}button{margin-top:18px;border:0;border-radius:10px;padding:13px 18px;background:#111827;color:#fff;font-weight:700;cursor:pointer}.note{font-size:13px;color:#687386;line-height:1.6}.status{white-space:pre-wrap;margin-top:18px;padding:12px;border-radius:10px;background:#f2f4f7;min-height:24px}</style>
+</head>
+<body><main class="wrap">
+<h1>Threads 테스트 게시</h1>
+<p class="note">이 페이지는 초기 연결 테스트용입니다. 관리자 키와 Threads 토큰은 서로 다른 값입니다. 액세스 토큰은 이 화면에 입력하지 않습니다.</p>
+<form id="f">
+<label for="key">AUTOMATION_ADMIN_KEY</label><input id="key" type="password" autocomplete="off" required>
+<label for="text">테스트 게시물</label><textarea id="text" maxlength="480" required>오늘부터 필요한 소식만 간단하게 정리해보겠습니다.\n\n기업 · 산업 · 경제 · 글로벌 이슈를 편하게 확인해보세요.</textarea>
+<button type="submit">Threads에 테스트 게시</button>
+</form><div class="status" id="status">대기 중</div>
+<script>
+const f=document.getElementById('f'),s=document.getElementById('status');
+f.addEventListener('submit',async(e)=>{e.preventDefault();s.textContent='게시 요청 중...';try{const r=await fetch('/api/threads-test',{method:'POST',headers:{'content-type':'application/json','x-admin-key':document.getElementById('key').value},body:JSON.stringify({text:document.getElementById('text').value})});const d=await r.json();s.textContent=r.ok?'게시 완료\n'+JSON.stringify(d,null,2):'실패\n'+JSON.stringify(d,null,2)}catch(err){s.textContent='오류\n'+err.message}});
+</script>
+</main></body></html>
